@@ -1,0 +1,5 @@
+<h1> Visual Memory Study </h1>
+
+<p>Congratulations! You’ve successfully completed the task. Thank you for your participation. </p>
+<p>Based on your performance on Trial # <span id="trial_index"></span> with <span id="trial_points"></span> points, your bonus earned is $<span id='final_bonus'>.</span> </p>
+<p style="font-size: 20pt; font-weight: bold">Your Mechanical Turk code is ******. </p>

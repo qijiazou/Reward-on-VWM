@@ -1,0 +1,4 @@
+<h1> Visual Memory Study </h1>
+
+<p style="font-size: 16pt; font-weight: bold">Sorry! Since you didn't get the answers correctly, we will have to disqualify you from the study.</p>
+<p>Thank you for your interest in the study! </p>

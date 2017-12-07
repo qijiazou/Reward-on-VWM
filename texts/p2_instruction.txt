@@ -1,0 +1,6 @@
+<h1> Visual Memory Study </h1>
+
+<p>On each trial, you will see one or more striped patterns of random orientations briefly flashing on your screen. Please try your best to remember their orientations.</p>
+<p>After a brief delay, you will see a striped pattern in one of those locations. Rotate it with your mouse so that its orientation matches what you remember that was previously in that location. Click once you’ve decided.</p>
+<p>You will also see a small cross at the center of your screen. Please try to look at it as much as you can.</p>
+

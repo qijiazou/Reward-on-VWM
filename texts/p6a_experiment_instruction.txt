@@ -1,0 +1,8 @@
+<h1> Visual Memory Study </h1>
+
+
+<p>Good job! Now you are going to do the actual experiment, which is the same as what you did in demo session. </p>
+<p>There are 250 trials in total, and we will notify your progress every time you complete 50 trials.</p>
+<br>
+<p>We will also irregularly check your attention during the experiment by asking you to do some very simple task (like press a key on the keyboard.) Please pay attention to those questions!</p>
+<p style="font-size: 16pt; font-weight: bold; color: #b01c08">We might not be able to accept your data on MTurk if you get them wrong.</p>

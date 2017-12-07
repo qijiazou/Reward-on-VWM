@@ -1,0 +1,9 @@
+
+<h1> Visual Memory Study </h1>
+<p>Except $2 base rate, you also have the chance to get bonus. </p>
+<p>For each trial, we will score how close your response is to the actual orientation on a scale of 1-10. After each trial, you will be told how many points you just got, and we will show you how big your error was by marking the real orientation with <span style="color:#b01c08; font-weight: bold; text-decoration: underline">a red line</span> and your response in <span style="font-weight: bold; text-decoration: underline">white line</span>. After the whole experiment, we will randomly PICK ONE TRIAL and use its score to decide how much bonus you will actually receive.</p>
+<br><div style="font-weight: bold; color:#b01c08"> 
+The MAXIMUM bonus you can earn is <span id='max_bonus'></span>.
+<p>You can get <span id='bonus_per_point'></span> for each point you earn on a trial. For example, if you get 7 points on the picked trial, your actual bonus is <span id='bonus_pt7'>.</span> You will not get any bonus for 0 point! </p>
+</div>
+<p>Now we will have a short demo session which consists of 15 trials for you to try out the task. Your performance during demo session will NOT affect your final bonus.</p>

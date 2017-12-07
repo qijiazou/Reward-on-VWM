@@ -1,0 +1,6 @@
+<h1> Visual Memory Study </h1>
+
+
+<p>Welcome and thank you for participating in this experiment!
+<p>In the study, you will need to perform some simple tasks on your computer. You will see the specific instructions on the next page. The entire study is approximately 30 min. Please complete the task without interruption. You will receive the code for Mechanical Turk at the end.</p>
+<p>Please DO NOT press back/reload button on your browser any time during the experiment!</p>

@@ -1,0 +1,6 @@
+<h1> Visual Memory Study </h1>
+
+<p>Congratulations! You've successfully completed the demo.</p>
+<p>Now we are going to have a small quiz on the instruction. It consists of 3 simple multiple-choice questions, but please answer them carefully. </p>
+<p style="font-size: 20px; font-weight: bold; color: #b01c08”}>YOU WILL BE DISQUALIFIED FROM THE STUDY IF YOU FAIL TO ANSWER ALL OF THEM CORRECTLY!</p>
+

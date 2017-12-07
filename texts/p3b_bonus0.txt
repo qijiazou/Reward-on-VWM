@@ -1,0 +1,4 @@
+<h1> Visual Memory Study </h1>
+
+<p>For each trial, we will score how close your response is to the actual orientation on a scale of 1-10. After each trial, you will be told how many points you just got, and we will show you how big your error was by marking the real orientation with a red line and your response in white line. </p>
+<p>We will have a short demo session which consists of 15 trials for you to try out the task. Your performance during demo session will not be recorded for actual experiment.</p>

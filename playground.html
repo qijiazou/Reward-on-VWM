@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+
+
+    .page-content {
+        margin:100px auto;
+        padding:50px;
+        text-align:center;
+        font-size: 16pt;
+        background: rgb(128, 128, 128);
+        color: white;
+        width: 80vw;
+        height: 80vh;
+    }
+
+    #clickbutton{
+        text-align: center;
+        font-size: 16pt;
+        font-family: "Times New Roman";
+        font-weight: bold;
+        padding: 10px;
+        color: #d45452;
+        border: 2px solid #d45452;
+        display: inline;
+        -webkit-transition-duration: 0.4s;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    #clickbutton:hover{
+        background-color: #d45452;
+        color: white;
+    }
+
+    #demo-container{
+        width: 80vw;
+        height:80vh;
+        position: absolute;
+    }
+
+    #catch-trial{
+        margin:100px auto;
+        padding: 50px;
+        text-align: center;
+        width: 60vw;
+        height: 40vh;
+        background: #ffee50;
+        color:#b01c08;
+        font-size: 30pt;
+        font-weight: bold;
+        display: none;
+    }
+
+    #point-box{
+        position: absolute;
+        z-index: 1;
+        display: inline;
+        padding-top: 1vh;
+        width: 80vw;
+        vertical-align: middle;
+        font-size: 20pt;
+        font-weight: bold;
+    }
+
+    #progress-bar{
+        position: absolute;
+        z-index: 1;
+        display: inline;
+        padding-top: 1vh;
+        width: 80vw;
+        vertical-align: middle;
+        font-size: 25pt;
+        font-weight: bold;
+        color: #b01c08;
+    }
+
+
+</style>
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Memory Study</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://rawgit.com/jtth/gaborgen-js/gh-pages/gab.js"></script>
+
+
+</head>
+
+
+<body>
+
+<div class="page-content">
+    <div id="turkID-container">
+        <p>
+            Please enter your Amazon MTurk ID.
+        </p>
+        <p>
+            <input id="TurkID">
+        </p>
+    </div>
+    <div class="introduction-container" id="introduction-container">
+        <div class="content-center">
+            <span id="introduction-text"> </span>
+            <p>
+            <div><button id='clickbutton' onclick="moveNext()">Continue</button></div>
+            </p>
+        </div>
+    </div>
+    <span id="catch-trial"> </span>
+    <div class="demo-container overlay" id="demo-container">
+        <div id="point-box"> </div>
+        <div id="progress-bar"> </div>
+        <canvas id="testCanvas" style="z-index: 0">
+        </canvas>
+    </div>
+    <div id="overlayCanvas">
+    </div>
+
+
+</div>
+</div>
+
+</body>
+
+
+
+<script>
+
+    ////////////////////////
+    //     NEW SYNTAX     //
+    ///////////////////////
+
+    //define a randomization syntax
+    Array.prototype.randomElement = function () {
+        return this[Math.floor(Math.random() * this.length)]
+    }
+
+    //Fisher-Yates shuffle: rand.permutation of an array
+    function shuffleArray(array) {
+        for (var i = array.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return array;
+    }
+
+
+    //get a random integer within a specific range
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+
+
+    ////////////////////////
+    //     FUNCTIONS      //
+    ///////////////////////
+
+
+
+    //retrieve intro page texts
+
+    var currentState = 0;
+    var bonus_setting;
+
+    function displayIntroductionText(text, callback){
+        var reader = new XMLHttpRequest();
+        reader.open('GET', text);
+        reader.onreadystatechange = function() {
+            if( this.readyState === 4 ) {
+                document.getElementById("introduction-text").innerHTML = reader.responseText;
+                //!!!! asynchronous behaviour of javascript
+                callback();
+            }
+            //document.getElementById("introduction-text").innerHTML = reader.responseText;
+        };
+        reader.send();
+    }
+
+    // main: control the progress of experiment; linked to function moveNext()
+    function move(){
+        switch(currentState){
+            //case# corresponds to the time that Continue button is clicked
+            case 1:
+                //confirm_mouse();
+                document.getElementById('turkID-container').style.display = "none";
+                displayIntroductionText('texts/p1_consent.txt');
+                break;
+            case 2:
+                displayIntroductionText('texts/p2_instruction.txt');
+
+//generate a random bonus condition, direct to different bonus pages, generate bonus rules
+                bonus_setting = new bonus_condition();
+
+            function bonus_condition() {
+
+                var bonus_array = [0, 2, 6, 10];
+                var bonus = bonus_array.randomElement();
+                var bonus_per_point = (bonus / 10).toFixed(1);
+                var bonus_pt7 = (bonus_per_point * 7).toFixed(1);
+
+                return [bonus, bonus_per_point, bonus_pt7];
+            }
+
+                console.log(bonus_setting);
+                break;
+
+            case 3:
+                if (bonus_setting[0] === 0){
+                    displayIntroductionText('texts/p3b_bonus0.txt');
+                    break;
+                } else {
+                    displayIntroductionText('texts/p3a_bonus.txt', function(){
+                        bonus_display()
+                    });
+                    break;
+                }
+            case 4:
+                document.getElementById("introduction-container").style.display = "none";
+                displayIntroductionText('texts/p4_quiz_instruction.txt');
+                document.getElementById('overlayCanvas').style.display = "none";
+                document.getElementById('demo-container').style.display = "block";
+                imgGabor.src = gaborgen(0, 5); //gaborgen(rotation, frequency = 5)
+                randomize_N(10);
+                runDemo(1);  //10 or 15
+                break;
+            case 5:
+                //for debugging purpose: check if the data recorded in the demo is valid
+                displayIntroductionText('texts/p5_quiz.txt');
+                console.log('target orientations: ' + target_angle_array);
+                console.log('responses:' + response_array);
+                console.log('errors:' + all_error);
+                console.log('points:' + all_points);
+                console.log('target position indexes:' + target_position_array);
+                break;
+            case 6:
+                if (($('input[name="q1"]:checked').val() === '1A') && ($('input[name="q2"]:checked').val() === '2B') && ($('input[name="q3"]:checked').val() === '3A')){
+                    displayIntroductionText('texts/p6a_experiment_instruction.txt');
+                    break;
+                } else {
+                    displayIntroductionText('texts/p6b_disqualify.txt');
+                    document.getElementById('clickbutton').style.display = "none";
+                    break;
+                }
+            case 7:
+                document.getElementById("introduction-container").style.display = "none";
+                document.getElementById('overlayCanvas').style.display = "none";
+                document.getElementById('demo-container').style.display = "block";
+                refresh_data();
+                randomize_N(250);
+                runExperiment(20);  //250
+                break;
+        }
+    }
+
+
+    // control the action of the Continue button
+    function moveNext(){
+        currentState++;
+        if (currentState===4){
+            document.getElementById('clickbutton').style.display = "none";
+        }
+        if (currentState===7){
+            document.getElementById('clickbutton').style.display = "none";
+        }
+        if (currentState===8){
+            document.getElementById('clickbutton').style.display = "none";
+        }
+        move();
+    }
+
+
+
+
+    //randomly pick one trial
+    var picked_trial_pt;
+    var picked_trial_ind;
+
+    function pick_trial(){
+        picked_trial_ind = getRandomInt(1,10); //change it to 250 before running real experiments!
+        picked_trial_pt = all_points[picked_trial_ind];
+
+        //for debugging purpose:
+        console.log(picked_trial_ind);
+        console.log(picked_trial_pt);
+    }
+
+
+
+
+    function initialize_final_page(){  //function called after the full session is completed
+
+        //results are determined at here
+        pick_trial();
+
+        document.getElementById('demo-container').style.display = "none";
+        document.getElementById('overlayCanvas').style.display = "none";
+        document.getElementById("introduction-text").innerHTML = "";
+        document.getElementById('introduction-container').style.display = "block";
+
+        setTimeout(function(){
+            displayIntroductionText('texts/p7_final_result.txt', function(){
+                result_display()
+            });
+        }, 2500);
+
+
+        //document.getElementById('clickbutton').style.display = "block";
+
+    }
+
+
+
+
+    function bonus_display(){
+        document.getElementById("max_bonus").innerHTML = "$" + bonus_setting[0];
+        document.getElementById("bonus_per_point").innerHTML = "$" + bonus_setting[1];
+        document.getElementById("bonus_pt7").innerHTML = "$" + bonus_setting[2];
+
+    }
+
+
+
+
+    function result_display(){
+        document.getElementById("trial_index").innerHTML = picked_trial_ind;
+        document.getElementById("trial_points").innerHTML = picked_trial_pt;
+        var actual_bonus = (picked_trial_pt * bonus_setting[1]).toFixed(1);
+        document.getElementById("final_bonus").innerHTML = actual_bonus;
+
+    }
+
+
+
+    // refresh the arrays
+    // if the demo data is also needed, output the data before this function is executed
+    function refresh_data(){
+        N_randperm = [];
+        all_points = [];
+        all_error = [];
+        all_start_angle = [];
+        target_position_array = [];
+        response_array = [];
+        target_angle_array = [];
+        now = 1;
+        current_gabor_angles = [];
+        mouse_check = 0;
+    }
+
+
+
+
+    var N_array = [1, 2, 4, 6, 8];
+    var N_randperm = [];
+    var all_error = [];
+    var all_points = [];
+    var all_start_angle = [];
+
+    var canvas;
+    var ctx;
+    var crossSize = 5;
+    var gabor_size = 80;
+    var imgGabor = new Image();
+
+    var position_ind = [0, 1, 2, 3, 4, 5, 6, 7];
+    var now = 1; //"now" = current trial
+
+    var target_position;
+    var target_position_array = [];
+    var response_angle;
+    var response_array = [];
+    var target_angle_array = [];
+    var current_gabor_angles;
+    var error;
+    var start_angle;
+    var response_time;
+    var response_time_array = [];
+    var start_time;
+    var continuous_click = 0;
+
+    var mouse_check = 0;
+
+    var mouse_X;
+    var response_X;
+
+
+    function initializeScreen(){
+        canvas = document.getElementById("testCanvas");
+        parent = document.getElementById("demo-container");
+        canvas.height = parent.clientHeight;
+        h = canvas.height;
+        canvas.width = parent.clientWidth;
+        ctx = canvas.getContext("2d");
+
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.beginPath();
+        ctx.moveTo(0,0);
+
+        ctx.fillStyle = 'rgb(128, 128, 128)';
+
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        fixation();
+
+        //calculate 8 coordinate positions
+        //Polar to Cartesian:
+        // x = radius * Math.sin(theta)
+        // y = radius * Math.cos(theta)
+        //use 0.707 as an approximation of (sqrt2)/2
+        radius = 0.35; //radius: the proportion (d:w) that the "virtual circle" takes up the screen
+        x_positions = [0, 0.707*radius*h, radius*h, 0.707*radius*h, 0, -0.707*radius*h, -radius*h, -0.707*radius*h];
+        y_positions = [radius*h, 0.707*radius*h, 0, -0.707*radius*h, -radius*h, -0.707*radius*h, 0, 0.707*radius*h];
+
+    }
+
+
+    //draw fixation cross
+    function fixation(){
+        ctx.beginPath();
+        ctx.lineWidth="2";
+        ctx.strokeStyle="white";
+
+        ctx.moveTo(canvas.width/2 - crossSize,canvas.height/2);
+        ctx.lineTo(canvas.width/2 + crossSize,canvas.height/2);
+        ctx.stroke();
+
+        ctx.moveTo(canvas.width/2 ,canvas.height/2 - crossSize);
+        ctx.lineTo(canvas.width/2 ,canvas.height/2 + crossSize);
+        ctx.stroke();
+
+    }
+
+
+    //generate a pseudorandom array of N, length = #Trials
+    function randomize_N(n_trial){
+        for (i = 1; i <= n_trial/N_array.length;) {
+            N_randperm = N_randperm.concat(shuffleArray(N_array));
+            i++;
+        }
+
+//for debugging purpose
+        //return N_randperm;
+        console.log(N_randperm);
+    }
+
+
+    ///////////////////////////////////////
+    //        MAIN DEMO BODY CODE       //
+    /////////////////////////////////////
+
+    function runDemo(n){
+
+        initializeScreen();
+
+        current_gabor_angles = gabor_orientation(now);
+
+        start_angle = (Math.random() * 180 - 90) * Math.PI / 180; // start_angle [-PI/2, PI/2]
+
+        all_start_angle = all_start_angle.concat(start_angle);
+
+
+        //start_angle = ((canvas.width / 2 + rdm_start_angle * canvas.width/4 - canvas.width/8) % (canvas.width/4) / (canvas.width/4) * 180 - 90) * Math.PI / 180;
+
+        ////*** STEP 1: SHOW PATCHES ***////
+        setTimeout(function(){
+            display_patches(current_gabor_angles, shuffleArray(position_ind));
+
+            ////*** STEP 2: DELAY 1 SEC ***////
+            setTimeout(function(){
+                initializeScreen();
+
+                ////*** STEP 3: PROBE ***////
+                //define rand_position_ind[0] to always be the one being picked
+                setTimeout(function(){
+                    draw_gabor(target_position, start_angle);
+
+                    ////*** STEP 4: ASK FOR RESPONSE, SHOW THE POINTS ***////
+                    start_time = new Date();
+                    make_response();
+
+                    now++;
+
+                    $("#demo-container").click(function(){
+                        if (now <= n){
+                            setTimeout(function(){
+                                runDemo(n);
+                            }, 1500);  //the timer will be triggered only after the key is down.
+                            // need to be greater than 1000, since it contains 1000ms of result display time
+                        } else {
+                            setTimeout(function() {
+                                initializeQuiz();
+                            }, 3000); //enter the quiz!
+                        }
+                    })
+
+                }, 1000); //delay
+            }, 70); //stimuli display time
+        }, 500); //actual inter-trial time = 500 + (1500-1000) = 1000 ms
+
+    }
+
+
+
+
+
+
+    ////////////////////////////////////////
+    ///////////////////////////////////////
+
+
+    //generate gabor orientations within a trial; place it inside the trial loop
+    //all angles in RADIAN!
+    function gabor_orientation(now) {
+        var gabor_array = [];
+        //for (gabor_ind = 0; gabor_ind < N_randperm[0];) { //this is the tester line
+        for (gabor_ind = 0; gabor_ind < N_randperm[now-1];) { //i ranges from 0 to 14! loop i from 0 ~ n_trial-1
+            //randomly generate gabor with different orientations, index them
+            var orientation = (Math.random() * 180 - 90) * Math.PI/180 ;  //gabor orientation [-PI/2, PI/2]
+            gabor_array = gabor_array.concat(orientation);
+            gabor_ind++;
+        }
+        return gabor_array;
+    }
+
+
+
+    //the function that draws ONE gabor, given its position & orientation
+    function draw_gabor(position_ind,orientation){
+
+        imgGabor.src = gaborgen(0, 5); //gaborgen(rotation, frequency = 5)
+
+        var current_position = new gabor_coordinates();
+
+        function gabor_coordinates(){
+
+            switch(position_ind){
+                case 0:
+                    this.x = canvas.width/2 + x_positions[0];
+                    this.y = canvas.height/2 - y_positions[0];
+                    break;
+                case 1:
+                    this.x = canvas.width/2 + x_positions[1];
+                    this.y = canvas.height/2 - y_positions[1];
+                    break;
+                case 2:
+                    this.x = canvas.width/2 + x_positions[2];
+                    this.y = canvas.height/2 - y_positions[2];
+                    break;
+                case 3:
+                    this.x = canvas.width/2 + x_positions[3];
+                    this.y = canvas.height/2 - y_positions[3];
+                    break;
+                case 4:
+                    this.x = canvas.width/2 + x_positions[4];
+                    this.y = canvas.height/2 - y_positions[4];
+                    break;
+                case 5:
+                    this.x = canvas.width/2 + x_positions[5];
+                    this.y = canvas.height/2 - y_positions[5];
+                    break;
+                case 6:
+                    this.x = canvas.width/2 + x_positions[6];
+                    this.y = canvas.height/2 - y_positions[6];
+                    break;
+                case 7:
+                    this.x = canvas.width/2 + x_positions[7];
+                    this.y = canvas.height/2 - y_positions[7];
+                    break;
+            }
+        }
+        ctx.save();
+        ctx.translate(current_position.x, current_position.y);
+        ctx.rotate(-Math.PI/2 + orientation); //ctx.rotate --> CLOCKWISE ROTATION //original gabor is horizontal --> convert it to vertical first!
+        ctx.drawImage(imgGabor, -gabor_size/2, -gabor_size/2, gabor_size, gabor_size);  //ctx.drawImage(img, x, y, width, height)
+        ctx.restore();
+    }
+
+
+    function display_patches(gabor_array, rand_position_ind){
+
+        fixation();
+
+        console.log(gabor_array);
+        console.log(rand_position_ind);
+        for (j = 0; j <= (gabor_array.length-1);j++){
+            draw_gabor(rand_position_ind[j], gabor_array[j]);
+        }
+        target_position = rand_position_ind[0];
+        target_position_array = target_position_array.concat(target_position);
+    }
+
+
+    function display_result(pt_round){
+        document.getElementById("point-box").innerHTML = pt_round + " points";
+        document.getElementById("point-box").style.display = 'inline';
+
+    }
+
+
+
+    $(document).mousemove(function(e) {
+        mouse_X = e.pageX;
+    });
+
+
+
+    function make_response(){
+
+        mouseXStartPosition = mouse_X;
+
+        var angleDifference = start_angle;
+
+        var refreshIntervalId = setInterval(function () {
+
+            //angleDifference = (mouse_X % (canvas.width/4) / (canvas.width/4) * 180 - 90) * Math.PI / 180;
+
+            angleDifference = (mouse_X/5 - mouseXStartPosition/5 + start_angle);    // divide by 5: make mouse control of gabor more natural?
+            initializeScreen();
+            draw_gabor(target_position, angleDifference);
+
+        }, 15);  //the gabor image will be refreshed w.r.t. the mouse every 15ms.
+
+
+        //things happened after clicking
+
+        $("#demo-container").click(function(e){
+
+            //freeze x position after mouse off
+            response_X = e.pageX;
+
+
+            //disable clicking
+            $("#demo-container").off('click');
+
+            //stop the timer
+            var click_time = new Date();
+
+            response_time = click_time - start_time;
+
+            response_time_array = response_time_array.concat(response_time);
+
+            console.log("response time:" + response_time);
+            console.log("time before response:" + start_time);
+            console.log("time after click: " + click_time);
+
+            clearInterval((refreshIntervalId));
+
+            response_angle = (response_X/5 - mouseXStartPosition/5 + start_angle) % Math.PI; //response_angle: [-PI, PI]
+
+            //calculation
+            response_array = response_array.concat(response_angle * 180 / Math.PI);
+
+
+            function calculate_error(response, real){
+
+                //response [-PI, PI]
+                //real [-PI/2, PI/2]
+                //final output error [-PI/2, PI/2]
+
+                var err_1 = response - Math.PI - real;
+                var abs1 = Math.abs(err_1);
+
+                var err_2 = response + Math.PI - real;
+                var abs2 = Math.abs(err_2);
+
+                var err_3 = response - real;
+                var abs3 = Math.abs(err_3);
+
+                if ((abs1 < abs2) && (abs1 < abs3)) {
+                    return err_1 * 180 / Math.PI;
+                } else if ((abs2 < abs1) && (abs2 < abs3)){
+                    return err_2 * 180 / Math.PI;
+                } else {
+                    return err_3 * 180 / Math.PI;
+                }
+            }
+
+            error = calculate_error(response_angle, current_gabor_angles[0]);
+
+            all_error = all_error.concat(error);
+
+            target_angle_array = target_angle_array.concat(current_gabor_angles[0] * 180 / Math.PI);
+
+            //for debugging purpose
+            console.log('response angle:' + response_angle);
+            console.log('real angle: ' + current_gabor_angles[0]);
+            console.log('error:' + error);
+            console.log("start angle:" + start_angle);
+
+            var mouse_move_angle = Math.abs(response_angle - start_angle);
+            response_check(mouse_move_angle);
+
+            //prepare for displaying result
+            initializeScreen();
+
+            setTimeout(function(){
+                show_points(error);
+                draw_real_angle(target_position, current_gabor_angles[0], response_angle);
+            }, 50); //show results after 50ms
+
+
+            setTimeout(function(){
+                initializeScreen();
+                document.getElementById("point-box").style.display = 'none';
+            },1000); //result display time after clicking
+
+
+        })
+    }
+
+    var point_sigma = 17 * 0.8;
+    var gaussian_expo;
+    var pt_dist;
+    var pt_round;
+
+    function show_points(error){  //current_n = gabor_orientation[now].length
+
+        //convert error from rad back to degree
+
+        gaussian_expo = (-1) * (Math.abs(error)^2)/(2*point_sigma^2);
+        pt_dist = Math.exp(gaussian_expo);
+        pt_round = Math.round(10 * pt_dist);
+
+        all_points = all_points.concat(pt_round);
+
+        display_result(pt_round);
+
+        console.log('pt_distribution' + pt_dist);
+
+        //calculate points: Matlab code from Paul & Luigi
+        //sigma       = design.pointsigma_mult(idx_val)*design.width(idx_val);
+        //vals        = [responseAngle-180-params.trial_mean responseAngle-params.trial_mean responseAngle+180-params.trial_mean];
+        //error       = min(abs(vals));    //abs might not be needed here since in expo it is squared.
+        //expo        = ((error)^2)/(2*sigma^2);
+        //points_prob = exp(-expo);
+        //point_totes = round(10*points_prob);
+
+    }
+
+
+
+    function draw_real_angle(target_position,real_angle,response_angle){
+//target coordinates: the CENTER of the target;
+//real_angle = gabor_orientation(now)[0] --> RADIAN
+
+        var target_x = canvas.width/2 + x_positions[target_position];
+        var target_y = canvas.height/2 - y_positions[target_position];
+
+        //draw real angle line
+        ctx.beginPath();
+        ctx.lineWidth="3";
+        ctx.strokeStyle="red";
+
+        ctx.moveTo(target_x, target_y);
+        ctx.lineTo(target_x + 25 * Math.sin(real_angle), target_y - 25 * Math.cos(real_angle));
+        ctx.stroke();
+
+        ctx.moveTo(target_x, target_y);
+        ctx.lineTo(target_x - 25 * Math.sin(real_angle), target_y + 25 * Math.cos(real_angle));
+        ctx.stroke();
+
+        //draw chosen angle line
+        ctx.beginPath();
+        ctx.lineWidth="3";
+        ctx.strokeStyle="white";
+
+        ctx.moveTo(target_x, target_y);
+        ctx.lineTo(target_x + 25 * Math.sin(response_angle), target_y - 25 * Math.cos(response_angle));
+        ctx.stroke();
+
+        ctx.moveTo(target_x, target_y);
+        ctx.lineTo(target_x - 25 * Math.sin(response_angle), target_y + 25 * Math.cos(response_angle));
+        ctx.stroke();
+    }
+
+
+
+    //test if the subject makes response without moving the mouse for 3 times consecutively:
+    function response_check(mouse_move_angle){
+
+        if (Math.abs(mouse_move_angle) < 0.00001){ //this is the current trial
+            mouse_check++;
+        } else {
+            mouse_check = 0;
+        }
+        if (mouse_check === 5){
+            //alert("Please move your mouse to make a response!");
+            continuous_click++;
+            mouse_check = 0;
+            //DATA OUTPUT: IF THIS FUNCTION IS TRIGGERED, WE NEED TO MARK THE DATA
+        }
+        console.log('non-movement count' + mouse_check);
+    }
+
+
+    //called after the last trial has been finished
+    function initializeQuiz() {
+        document.getElementById('demo-container').style.display = "none";
+        document.getElementById('overlayCanvas').style.display = "none";
+        document.getElementById('clickbutton').style.display = "inline";
+        document.getElementById("introduction-container").style.display = "block";
+
+    }
+
+
+
+
+    function runExperiment(n){
+
+        initializeScreen();
+
+        current_gabor_angles = gabor_orientation(now);
+
+        start_angle = (Math.random() * 180 - 90) * Math.PI/180;
+
+        all_start_angle = all_start_angle.concat(start_angle);
+
+        ////*** STEP 1: SHOW PATCHES ***////
+        setTimeout(function(){
+            display_patches(current_gabor_angles, shuffleArray(position_ind));
+
+            ////*** STEP 2: DELAY 1 SEC ***////
+            setTimeout(function(){
+                initializeScreen();
+
+                ////*** STEP 3: PROBE ***////
+                //define rand_position_ind[0] to always be the one being picked
+                setTimeout(function(){
+                    draw_gabor(target_position, start_angle);
+
+                    ////*** STEP 4: ASK FOR RESPONSE, SHOW THE POINTS ***////
+                    start_time = new Date();
+                    make_response();
+
+                    //var mouse_move_angle = all_start_angle[now-1] - response_array[now-1];
+                    //response_check(mouse_move_angle);
+
+                    now++;
+
+                    $("#demo-container").click(function(){
+                        if ((now <= n) && (now !== (0.2*n+1)) && (now !== (0.4*n+1)) && (now !== (0.6*n+1)) && (now !== (0.8*n+1)) && (now !== 3)){
+                            setTimeout(function(){
+                                runExperiment(n);
+                            }, 1500);  //the timer will be triggered only after the key is down.
+                            // need to be greater than 1000, since it contains 1000ms of result display time
+                        } else if (now === (0.2*n+1)){
+                            setTimeout(function(){
+                                document.getElementById('progress-bar').style.display = "inline";
+                                document.getElementById("progress-bar").innerHTML = "You've completed 20% of the experiment!";
+
+                                setTimeout(function(){
+                                    document.getElementById('progress-bar').style.display = "none";
+                                    runExperiment(n);
+                                },5000)
+                            },1000) // progress: 20%
+
+                        } else if (now === (0.4*n+1)) {
+                            setTimeout(function(){
+                                document.getElementById('progress-bar').style.display = "inline";
+                                document.getElementById("progress-bar").innerHTML = "You've completed 40% of the experiment!";
+
+                                setTimeout(function(){
+                                    document.getElementById('progress-bar').style.display = "none";
+                                    runExperiment(n);
+                                },5000)
+                            },1000) // progress: 40%
+                        } else if (now === (0.6*n+1)){
+                            setTimeout(function(){
+                                document.getElementById('progress-bar').style.display = "inline";
+                                document.getElementById("progress-bar").innerHTML = "You've completed 60% of the experiment!";
+
+                                setTimeout(function(){
+                                    document.getElementById('progress-bar').style.display = "none";
+                                    runExperiment(n);
+                                },5000)
+                            },1000) // progress: 60%
+                        } else if (now === (0.8*n+1)) {
+                            setTimeout(function(){
+                                document.getElementById('progress-bar').style.display = "inline";
+                                document.getElementById("progress-bar").innerHTML = "You've completed 80% of the experiment!";
+
+                                setTimeout(function(){
+                                    document.getElementById('progress-bar').style.display = "none";
+                                    runExperiment(n);
+                                },5000)
+                            },1000) // progress: 80%
+
+                        } else if (now === n+1){
+                            setTimeout(function(){
+                                document.getElementById('progress-bar').style.display = "inline";
+                                document.getElementById("progress-bar").innerHTML = "You've completed the experiment! Please wait briefly for the browser to be automatically directed to the next page.";
+
+                                setTimeout(function(){
+                                    document.getElementById('progress-bar').style.display = "none";
+                                    initialize_final_page();
+                                },5000)
+                            },1000)
+                        } else if (now === 3) {  //insert three catch trials here: change it to 73 & 178 & 234; make sure to change line 37 as well
+                            setTimeout(function(){
+                                catch_trial();
+                                setTimeout(function(){
+                                    document.getElementById('demo-container').style.display = "block";
+                                    document.getElementById('catch-trial').style.display = "none";
+                                    runExperiment(n);
+                                }, 4000) //the catch trial automatically expires after 4s and proceeds to the next trial
+                            },1000)
+                        }
+                    })
+
+                }, 1000); //delay
+            }, 70); //stimuli display time
+        }, 500); //actual inter-trial time = 500 + (1500-1000) = 1000 ms
+
+    }
+
+
+
+
+
+    //attention test:
+    function catch_trial(){
+
+        document.getElementById('demo-container').style.display = "none";
+        document.getElementById('catch-trial').style.display = "block";
+        document.getElementById("catch-trial").innerHTML = "Please press SPACE on your keyboard! The next trial will be automatically shown within 4 seconds.";
+
+        //listen for key
+        $(document).keypress(function(e) {
+            if (e.which === 32) {  //32 is space
+                document.getElementById('catch-trial').style.display = "none";
+                document.getElementById('demo-container').style.display = "block";
+                //register the response as data output as well!
+            }
+        });
+    }
+
+
+</script>
+
+</html>
