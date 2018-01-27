@@ -4,6 +4,10 @@
 
 function runExperiment(n){
 
+
+    trial_array = ["NaN", "NaN", "NaN", "NaN","NaN", "NaN", "NaN", "NaN","NaN", "NaN", "NaN", "NaN","NaN", "NaN", "NaN", "NaN", "NaN", "NaN"];
+    trial_array[0] = now;
+
     initializeScreen();
 
     current_gabor_angles = gabor_orientation(now);
@@ -27,10 +31,8 @@ function runExperiment(n){
 
                 ////*** STEP 4: ASK FOR RESPONSE, SHOW THE POINTS ***////
                 start_time = new Date();
-                make_response();
 
-                //var mouse_move_angle = all_start_angle[now-1] - response_array[now-1];
-                //response_check(mouse_move_angle);
+                make_response();
 
                 now++;
 
@@ -49,7 +51,7 @@ function runExperiment(n){
                                 document.getElementById('progress-bar').style.display = "none";
                                 runExperiment(n);
                             },5000)
-                        },1000) // progress: 20%
+                        },1500) // progress: 20%
 
                     } else if (now === (0.4*n+1)) {
                         setTimeout(function(){
@@ -60,7 +62,7 @@ function runExperiment(n){
                                 document.getElementById('progress-bar').style.display = "none";
                                 runExperiment(n);
                             },5000)
-                        },1000) // progress: 40%
+                        },1500) // progress: 40%
                     } else if (now === (0.6*n+1)){
                         setTimeout(function(){
                             document.getElementById('progress-bar').style.display = "inline";
@@ -70,7 +72,7 @@ function runExperiment(n){
                                 document.getElementById('progress-bar').style.display = "none";
                                 runExperiment(n);
                             },5000)
-                        },1000) // progress: 60%
+                        },1500) // progress: 60%
                     } else if (now === (0.8*n+1)) {
                         setTimeout(function(){
                             document.getElementById('progress-bar').style.display = "inline";
@@ -80,7 +82,7 @@ function runExperiment(n){
                                 document.getElementById('progress-bar').style.display = "none";
                                 runExperiment(n);
                             },5000)
-                        },1000) // progress: 80%
+                        },1500) // progress: 80%
 
                     } else if (now === n+1){
                         setTimeout(function(){
@@ -91,8 +93,8 @@ function runExperiment(n){
                                 document.getElementById('progress-bar').style.display = "none";
                                 initialize_final_page();
                             },5000)
-                        },1000)
-                    } else if (now === 3) {  //insert three catch trials here: change it to 73 & 178 & 234; make sure to change line 37 as well
+                        },1500)
+                    } else if (now === 73 || now === 178 || now === 234) {  //insert three catch trials here: change it to 73 & 178 & 234; make sure to change line 37 as well
                         setTimeout(function(){
                             catch_trial();
                             setTimeout(function(){
@@ -100,12 +102,12 @@ function runExperiment(n){
                                 document.getElementById('catch-trial').style.display = "none";
                                 runExperiment(n);
                             }, 4000) //the catch trial automatically expires after 4s and proceeds to the next trial
-                        },1000)
+                        },1500)
                     }
                 })
 
             }, 1000); //delay
-        }, 70); //stimuli display time
+        }, 50); //stimuli display time
     }, 500); //actual inter-trial time = 500 + (1500-1000) = 1000 ms
 
 }
@@ -115,18 +117,24 @@ function runExperiment(n){
 
 
 //attention test:
+var catches = 0;
+
 function catch_trial(){
 
     document.getElementById('demo-container').style.display = "none";
     document.getElementById('catch-trial').style.display = "block";
-    document.getElementById("catch-trial").innerHTML = "Please press SPACE on your keyboard! The next trial will be automatically shown within 4 seconds.";
+    document.getElementById("catch-trial").innerHTML = "Please press the key 'J' on your keyboard!";
 
     //listen for key
     $(document).keypress(function(e) {
-        if (e.which === 32) {  //32 is space
-            document.getElementById('catch-trial').style.display = "none";
-            document.getElementById('demo-container').style.display = "block";
-            //register the response as data output as well!
+        if (e.which === 74 || e.which === 106) {  //13 = Enter; 74 = J; 106 = j
+            document.getElementById("catch-trial").innerHTML = "Key pressed!";
+            setTimeout(function(){
+                document.getElementById('catch-trial').style.display = "none";
+                document.getElementById('demo-container').style.display = "block";
+                catches += 1;
+                //register the response as data output as well!
+            }, 1000);
         }
     });
 }

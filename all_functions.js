@@ -38,6 +38,8 @@ function getRandomInt(min, max) {
 
 var currentState = 0;
 var bonus_setting;
+var DEMO;
+var turk_code;
 
 function displayIntroductionText(text, callback){
     var reader = new XMLHttpRequest();
@@ -53,19 +55,23 @@ function displayIntroductionText(text, callback){
     reader.send();
 }
 
+
+
 // main: control the progress of experiment; linked to function moveNext()
 function move(){
     switch(currentState){
         //case# corresponds to the time that Continue button is clicked
         case 1:
-            //confirm_mouse();
+
             document.getElementById('turkID-container').style.display = "none";
             displayIntroductionText('texts/p1_consent.txt');
+
             break;
+
         case 2:
             displayIntroductionText('texts/p2_instruction.txt');
 
-//generate a random bonus condition, direct to different bonus pages, generate bonus rules
+            //generate a random bonus condition, direct to different bonus pages, generate bonus rules
             bonus_setting = new bonus_condition();
 
             function bonus_condition() {
@@ -98,33 +104,65 @@ function move(){
             document.getElementById('demo-container').style.display = "block";
             imgGabor.src = gaborgen(0, 5); //gaborgen(rotation, frequency = 5)
             randomize_N(10);
-            runDemo(1);  //10 or 15
+            DEMO = "True";
+            runDemo(15);  //10 or 15
             break;
         case 5:
+
             //for debugging purpose: check if the data recorded in the demo is valid
             displayIntroductionText('texts/p5_quiz.txt');
-            console.log('target orientations: ' + target_angle_array);
-            console.log('responses:' + response_array);
-            console.log('errors:' + all_error);
-            console.log('points:' + all_points);
-            console.log('target position indexes:' + target_position_array);
+
+
+            //console.log('target orientations: ' + target_angle_array);
+            //console.log('responses:' + response_array);
+            //console.log('errors:' + all_error);
+            //console.log('points:' + all_points);
+            //console.log('target position indexes:' + target_position_array);
             break;
         case 6:
-            if (($('input[name="q1"]:checked').val() === '1A') && ($('input[name="q2"]:checked').val() === '2B') && ($('input[name="q3"]:checked').val() === '3A')){
+            //if qualify, then generate the TurkCode
+            if (($('input[name="q1"]:checked').val() === '1A') && ($('input[name="q2"]:checked').val() === '2B') && ($('input[name="q3"]:checked').val() === '3A')) {
+
+                //generate a 7-digit unique MTurk code (letter & number) for the subject
+                function generate_code() {
+                    var code = "";
+                    for (l = 0; l <= 6; l++) {
+                        // [0~9, A~Z, a~z]
+                        var i = getRandomInt(48, 57);
+                        var j = getRandomInt(65, 90);
+                        var k = getRandomInt(97, 122);
+                        var myArray = [i, j, k];
+                        var new_ascii = myArray.randomElement();
+                        var new_letter = String.fromCharCode(new_ascii);
+                        code = code.concat(new_letter);
+                    }
+                    return code;
+                }
+
+                turk_code = generate_code();
+
+                storeDataDEMO();
+
                 displayIntroductionText('texts/p6a_experiment_instruction.txt');
                 break;
             } else {
+                //store DEMO data: for disqualifiers, the TurkCode will be #######
+                turk_code = "#######";
+                storeDataDEMO();
+
                 displayIntroductionText('texts/p6b_disqualify.txt');
                 document.getElementById('clickbutton').style.display = "none";
                 break;
             }
+
         case 7:
             document.getElementById("introduction-container").style.display = "none";
             document.getElementById('overlayCanvas').style.display = "none";
             document.getElementById('demo-container').style.display = "block";
             refresh_data();
+            DEMO = "False";
             randomize_N(250);
-            runExperiment(20);  //250
+            runExperiment(250);  //250
             break;
     }
 }
@@ -132,17 +170,25 @@ function move(){
 
 // control the action of the Continue button
 function moveNext(){
-    currentState++;
-    if (currentState===4){
-        document.getElementById('clickbutton').style.display = "none";
-    }
-    if (currentState===7){
-        document.getElementById('clickbutton').style.display = "none";
-    }
-    if (currentState===8){
-        document.getElementById('clickbutton').style.display = "none";
+    if((currentState === 0) && !MturkIDValidation()){
+        return;
+    } else {
+        if (currentState ===4){
+            document.getElementById('clickbutton').style.display = "none";
+        }
+        if (currentState === 6 && !RadioValidation()){
+            return;
+        } else {
+            if (currentState===7){
+                document.getElementById('clickbutton').style.display = "none";
+            }
+            if (currentState===8){
+                document.getElementById('clickbutton').style.display = "none";
+            }
+        }
     }
     move();
+    currentState++;
 }
 
 
@@ -153,12 +199,12 @@ var picked_trial_pt;
 var picked_trial_ind;
 
 function pick_trial(){
-    picked_trial_ind = getRandomInt(1,10); //change it to 250 before running real experiments!
+    picked_trial_ind = getRandomInt(1,250); //change it to 250 before running real experiments!
     picked_trial_pt = all_points[picked_trial_ind];
 
     //for debugging purpose:
-    console.log(picked_trial_ind);
-    console.log(picked_trial_pt);
+    //console.log(picked_trial_ind);
+    //console.log(picked_trial_pt);
 }
 
 
@@ -167,6 +213,7 @@ function pick_trial(){
 function initialize_final_page(){  //function called after the full session is completed
 
     //results are determined at here
+
     pick_trial();
 
     document.getElementById('demo-container').style.display = "none";
@@ -187,7 +234,6 @@ function initialize_final_page(){  //function called after the full session is c
 
 
 
-
 function bonus_display(){
     document.getElementById("max_bonus").innerHTML = "$" + bonus_setting[0];
     document.getElementById("bonus_per_point").innerHTML = "$" + bonus_setting[1];
@@ -204,6 +250,10 @@ function result_display(){
     var actual_bonus = (picked_trial_pt * bonus_setting[1]).toFixed(1);
     document.getElementById("final_bonus").innerHTML = actual_bonus;
 
+    document.getElementById("turk_code").innerHTML = turk_code;
+
+    //store FULL data here now
+    storeDataFULL(actual_bonus,picked_trial_ind);
 }
 
 
@@ -221,5 +271,90 @@ function refresh_data(){
     now = 1;
     current_gabor_angles = [];
     mouse_check = 0;
+    data = [];   ////!!!!!!!!! DEMO DATA WILL BE CLEARED! MAKE SURE TO SAVE DATA AS A SEPARATE CSV BEFORE THIS FUNCTION IS CALLED!
 }
 
+
+
+/**
+ * @return {boolean}
+ */
+function MturkIDValidation(){
+    turk_id = document.getElementById("TurkID").value;
+    if(turk_id.length != 14){
+        document.getElementById("turkID-check").style.display='block';
+        alert("Please enter a valid Amazon MTurk Worker ID!");
+        return false;
+    }
+    currentState++;
+    return true;
+}
+
+/**
+ * @return {boolean}
+ */
+function RadioValidation() {
+    //check whether all buttons are checked
+    if ((!$("input[name='q1']").is(':checked')) || (!$("input[name='q2']").is(':checked')) || (!$("input[name='q3']").is(':checked'))) {
+        alert("Please answer all questions!");
+        return false;
+    }
+    return true;
+}
+
+
+function storeDataDEMO(){
+
+    //template: here this variable defines what is to be eventually stored into csv
+    //right hand side comes from JS code
+    var dataObject = {
+        type: "DEMO",
+        turkCode: turk_code.toString(),
+        MTurkID: JSON.stringify(turk_id),
+        BonusCondition: bonus_setting[0].toString(),
+        Trials: JSON.stringify(data)
+    };
+    console.log(JSON.stringify(dataObject));
+    dataObject = $(this).serialize() + "&" + $.param(dataObject);
+    $.ajax({
+        //Send POST request to response.php file asking for specific data
+        type: "POST",
+        dataType: "json",
+        url: "server/storeData.php",
+        data: dataObject,
+        success: function(dataObject) {
+            var attempt = JSON.parse(dataObject["json"]);
+            alert(JSON.stringify(attempt.message));
+            //alert("Form submitted successfully.\nReturned json: " + JSON.stringify(receivedStimulusAttempt));
+        }
+    });
+    return false;
+
+}
+
+function storeDataFULL(actual_bonus,picked_trial){
+    var dataObject = {
+        type: "FULL",
+        turkCode: turk_code.toString(),
+        MTurkID: JSON.stringify(turk_id),
+        BonusCondition: bonus_setting[0].toString(),
+        ActualBonus: actual_bonus.toString(),
+        PickedTrial: picked_trial.toString(),
+        CatchTrialResult: catches.toString(),
+        Trials: JSON.stringify(data)
+    };
+    console.log(JSON.stringify(dataObject));
+    dataObject = $(this).serialize() + "&" + $.param(dataObject);
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "server/storeData.php", //Relative or absolute path to response.php file
+        data: dataObject,
+        success: function(dataObject) {
+            var attempt = JSON.parse(dataObject["json"]);
+            alert(JSON.stringify(attempt.message));
+            //alert("Form submitted successfully.\nReturned json: " + JSON.stringify(receivedStimulusAttempt));
+        }
+    });
+    return false;
+}
