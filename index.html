@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:font-family="http://www.w3.org/1999/xhtml">
+
+<style>
+
+
+    .page-content {
+        margin: 50px auto;
+        margin-left: 7vw;
+        padding:30px;
+        text-align:center;
+        font-size: 16pt;
+        background: rgb(128, 128, 128);
+        color: white;
+        width: 80vw;
+        height: 80vh;
+        position: fixed;
+    }
+
+    #clickbutton{
+        text-align: center;
+        font-size: 16pt;
+        font-family: "Times New Roman";
+        font-weight: bold;
+        padding: 10px;
+        color: #d45452;
+        border: 2px solid #d45452;
+        display: inline;
+        -webkit-transition-duration: 0.4s;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    #clickbutton:hover{
+        background-color: #d45452;
+        color: white;
+    }
+
+    #demo-container{
+        width: 80vw;
+        height:80vh;
+        position: absolute;
+    }
+
+    #catch-trial{
+        margin:100px auto;
+        padding: 50px;
+        text-align: center;
+        width: 60vw;
+        height: 40vh;
+        background: #ffee50;
+        color:#b01c08;
+        font-size: 30pt;
+        font-weight: bold;
+        display: none;
+    }
+
+    #point-box{
+        position: absolute;
+        z-index: 1;
+        display: inline;
+        padding-top: 1vh;
+        width: 80vw;
+        vertical-align: middle;
+        font-size: 20pt;
+        font-weight: bold;
+    }
+
+    #progress-bar{
+        position: absolute;
+        z-index: 1;
+        display: inline;
+        padding-top: 1vh;
+        width: 80vw;
+        vertical-align: middle;
+        font-size: 25pt;
+        font-weight: bold;
+        color: #b01c08;
+    }
+
+
+</style>
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Memory Study</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="gabor-generator/css/jquery-ui.min.css">
+    <script type="text/javascript" src="gabor-generator/numeric.min.js"></script>
+    <script type="text/javascript" src="gabor-generator/jquery-min.js"></script>
+    <script type="text/javascript" src="gabor-generator/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="gabor-generator/gab.js"></script>
+    <script type="text/javascript" src="all_functions.js"></script>
+    <script type="text/javascript" src="experiment_demo.js"></script>
+    <script type="text/javascript" src="experiment_full.js"></script>
+
+</head>
+
+
+<body>
+
+<div class="page-content">
+    <div id="turkID-container">
+        <p>
+        Please enter your Amazon MTurk Worker ID. </p>
+        <p>(It's a 14-digit code in top left corner on your MTurk Worker page.)</p>
+        <p>
+            <input type="text" id="TurkID">
+        </p>
+
+        <div id="turkID-check" style="display: none;">
+            <p style="color:#b01c08;">
+                Provided Amazon MTurk ID is not in valid. Please make sure to enter the correct ID!
+            </p>
+        </div>
+    </div>
+    <div class="introduction-container" id="introduction-container">
+        <div class="content-center">
+            <span id="introduction-text"> </span>
+            <p>
+                <div><button id='clickbutton' onclick="moveNext()">Continue</button></div>
+            </p>
+        </div>
+    </div>
+    <span id="catch-trial"> </span>
+    <div class="demo-container overlay" id="demo-container">
+        <div id="point-box"> </div>
+        <div id="progress-bar"> </div>
+        <canvas id="testCanvas" style="z-index: 0">
+        </canvas>
+        </div>
+        <div id="overlayCanvas">
+        </div>
+
+
+    </div>
+</div>
+
+
+</body>
+</html>
