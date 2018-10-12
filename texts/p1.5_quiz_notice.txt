@@ -1,0 +1,9 @@
+
+
+<div>
+<p style="font-weight: bold; color:#fff968; font-size: 24pt">
+There will be a quiz later to test your understanding of the instructions, so please read them carefully.
+</p>
+<p style = "text-decoration: underline; font-size: 24pt"> If you fail the quiz, you will be disqualified from the study and will not receive your full payment!
+</p>
+</div>

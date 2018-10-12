@@ -1,0 +1,8 @@
+<h1> Visual Memory Study </h1>
+
+
+<p>Thank you for participating in this experiment!</p>
+<p>Please DO NOT press the back or reload button on your browser at any time during the experiment. </p>
+<p>For your best experience, please DO NOT set your computer on power saving mode.</p>
+<p>The experiment will last approximately 30 to 45 min.</p>
+

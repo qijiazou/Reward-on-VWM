@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="myCanvas" width="800" height="800" style="border:1px solid #d3d3d3;">
+    Your browser does not support the HTML5 canvas tag.</canvas>
+
+<script>
+    gabor_size = 500;
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    ctx.fillStyle = "red";
+    ctx.fillRect(10, 10, 50, 50);
+    var imgGabor = new Image();
+    imgGabor.src = gaborgen(0, 5); //gaborgen(rotation, frequency = 5)
+
+    ctx.drawImage(imgGabor, -gabor_size/2, -gabor_size/2, gabor_size, gabor_size);  //ctx.drawImage(img, x, y, width, height)
+
+    var imgData = ctx.getImageData(100, 30, 50, 50);
+    red = imgData.data[0];
+    green = imgData.data[1];
+    blue = imgData.data[2];
+    alpha = imgData.data[3];
+    alert(red + " " + green + " " + blue + " " + alpha);
+
+</script>
+
+<p><strong>Note:</strong> The canvas tag is not supported in Internet
+    Explorer 8 and earlier versions.</p>
+
+</body>
+</html>

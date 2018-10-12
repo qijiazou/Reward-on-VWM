@@ -1,0 +1,7 @@
+
+
+<p>The experiment is a memory task that consists of 250 trials. </p>
+<p>On each trial, you will first see a small cross at the center of your screen. Try to focus on it whenever it is shown.</p>
+<p>You will then see one or more striped patterns with random orientations briefly flashing on your screen. Please try your best to remember ALL the orientations.</p>
+<p>After a brief delay, you will see a striped pattern in one of those locations. Rotate it with your mouse (or trackpad) such that its orientation matches what you remember at that location. Click once you have decided. </p>
+

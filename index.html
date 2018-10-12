@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:font-family="http://www.w3.org/1999/xhtml">
+
+<style>
+
+
+    .page-content {
+        margin: 50px auto;
+        margin-left: 7vw;
+        padding:30px;
+        text-align:center;
+        font-size: 18pt;
+        background: rgb(128, 128, 128);
+        color: white;
+        width: 80vw;
+        height: 80vh;
+        position: fixed;
+        font-family: "Times New Roman", Times, serif;
+        z-index: 0;
+    }
+
+    #clickbutton{
+        text-align: center;
+        font-size: 16pt;
+        font-family: "Times New Roman", Times, serif;
+        font-weight: bold;
+        padding: 10px;
+        color: #73b756;
+        border: 2px solid #73b756;
+        display: inline;
+        -webkit-transition-duration: 0.4s;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    #backbutton{
+        text-align: center;
+        font-size: 16pt;
+        font-family: "Times New Roman", Times, serif;
+        font-weight: bold;
+        padding: 10px;
+        color: #d45452;
+        border: 2px solid #d45452;
+        display: none;
+        -webkit-transition-duration: 0.4s;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    #consent-text{
+        overflow: scroll;
+        text-align: center;
+        width: 80vw;
+        height: 70vh;
+        font-size: 13pt;
+    }
+
+    #agree-button{
+        text-align: center;
+        font-size: 13pt;
+        font-family: "Times New Roman", Times, serif;
+        font-weight: bold;
+        padding: 5px;
+        color: #73b756;
+        border: 2px solid #73b756;
+        display: inline;
+        -webkit-transition-duration: 0.4s;
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
+    #agree-button:hover{
+        background-color: #73b756;
+        color: white;
+    }
+
+    #clickbutton:hover{
+        background-color: #73b756;
+        color: white;
+    }
+
+    #backbutton:hover{
+        background-color: #d45452;
+        color: white;
+    }
+
+    #turkID-container{
+        display:none;
+    }
+
+    #introduction-container{
+        display:none;
+    }
+
+    #demo-container{
+        width: 80vw;
+        height:80vh;
+        position: absolute;
+    }
+
+    #no-cursor{
+        width: 80vw;
+        height:80vh;
+        position: absolute;
+        display: none;
+    }
+
+    #catch-trial{
+        margin:100px auto;
+        padding: 50px;
+        text-align: center;
+        width: 60vw;
+        height: 40vh;
+        background: #ffee50;
+        color:#b01c08;
+        font-size: 30pt;
+        font-weight: bold;
+        display: none;
+    }
+
+    #point-box{
+        position: absolute;
+        z-index: 2;
+        display: inline;
+        padding-top: 1vh;
+        width: 80vw;
+        vertical-align: middle;
+        font-size: 20pt;
+        font-weight: bold;
+    }
+
+    #progress-bar{
+        position: absolute;
+        z-index: 2;
+        display: inline;
+        padding-top: 1vh;
+        width: 80vw;
+        vertical-align: middle;
+        font-size: 25pt;
+        font-weight: bold;
+        color: #b01c08;
+    }
+
+    #bonus-reminder{
+        position: absolute;
+        text-align: center;
+        z-index: 2;
+        display: inline;
+        margin-top: 30vh;
+        margin-left: 23vw;
+        width: 34vw;
+        vertical-align: middle;
+        font-size: 19pt;
+        font-weight: bold;
+        color: #ffee50;
+    }
+
+    tr:hover {background-color:#db5930;}
+
+    table.border {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    table.border th {
+        /* border: 2px solid white; */
+        padding: 3px;
+        height: 40px;
+    }
+
+    table.border td{
+        /* border: 2px solid white; */
+        padding: 7px;
+}
+
+th{
+    background-color: #d45452;
+    color: white;
+}
+
+tr {
+    border: solid;
+    border-width: 1px 0;
+}
+tr:first-child {
+    border-top: none;
+}
+tr:last-child {
+    border-bottom: none;
+}
+
+
+#confirm {
+    z-index: 4;
+
+    margin-left: 20vw;
+    margin-top:25vh;
+    text-align: center;
+    position: absolute;
+    display: none;
+    background-color: white;
+    border: 4px solid #db5930;
+    color: #db5930;
+    width: 40vw;
+    height: 40vh;
+    padding: 40px 15px 15px 20px;
+    box-sizing: border-box;
+    font-size: 45pt;
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+}
+#confirm button {
+    background-color: #db5930;
+    color: white;
+    display: inline-block;
+    border-radius: 5px;
+    margin: 5vh;
+    padding: 2vh;
+    text-align: center;
+    height: 12vh;
+    width: 16vw;
+    cursor: pointer;
+    font-size: 30pt;
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+    transition: all 0.5s;
+
+}
+#confirm button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+}
+
+#confirm button span:after {
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: 0.5s;
+}
+
+#confirm button:hover span {
+    padding-right: 25px;
+}
+
+#confirm button:hover span:after {
+    opacity: 1;
+    right: 0;
+}
+/*
+#confirm button:hover{
+    background-color: #1f4ead;
+    color: white;
+} */
+
+
+#confirm .message {
+    text-align: center;
+}
+
+</style>
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Memory Study</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="gabor-generator/css/jquery-ui.min.css">
+    <script type="text/javascript" src="gabor-generator/numeric.min.js"></script>
+    <script type="text/javascript" src="gabor-generator/jquery-min.js"></script>
+    <script type="text/javascript" src="gabor-generator/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="gabor-generator/gab.js"></script>
+    <script type="text/javascript" src="all_functions.js"></script>
+    <script type="text/javascript" src="experiment_demo.js"></script>
+    <script type="text/javascript" src="experiment_full.js"></script>
+    <link rel="icon" type="image/png" href="http://www.cns.nyu.edu/malab/static/images/seal.png">
+
+</head>
+
+
+<body>
+
+
+<div class="page-content">
+
+
+    <div id="consent-form">
+        <div id="consent-text">
+
+        <p>Dr. Wei Ji Ma and his team in the Department of Psychology at New York University invite you to participate in a brief experiment. The purpose of this experiment is to study people's ability to memorize and then recall things in a short time. </p>
+
+        <p>The task will take approximately 30~45 minutes, and you will receive $5 if you complete the task. You will not be paid unless you complete the task. </p>
+
+        <p>You must be 18 years or older to participate. By clicking “ACCEPT” below, you indicate agreement to participate in this study, and declare that you are 18 years or older.</p>
+
+        <p>After the initial instructions, you may be asked to confirm your understanding of these instructions through some simple questions. If so, you will be able to continue the task only when you answer these questions correctly. </p>
+
+        <p>Taking part in this study is voluntary and you may withdraw at any time. There are no known risks associated with your participation in this research beyond those of everyday life. Although you will receive no direct benefits, this research may help us understand how people make decisions. </p>
+
+        <p>Your participation will not be anonymous: we will collect your Amazon Worker ID so that we can pay you even if the internet has an unexpected connection issue during the experiment. We will not collect any other identifiable information. Your identifiable information will not be shared outside of the research team. Information not containing identifiers may be used in future research or shared with other researchers without your additional consent.</p>
+
+        <p>If you have questions about the study or about your participation, or if you wish to report a study-related problem, you may contact Dr. Wei Ji Ma at New York University, 4 Washington Place, New York, NY 10003, (212) 992-6530, or weijima@nyu.edu. For questions about your rights as a research participant, you may contact the University Committee on Activities Involving Human Subjects, New York University, 665 Broadway, Suite 804, New York, NY 10012, (212) 998-4808, or ask.humansubjects@nyu.edu. Please reference the study # (IRB-FY2018-2078) when contacting the IRB (UCAIHS).</p>
+
+        </div>
+        <p>
+        <div><button id="agree-button" onclick="consent_accepted()">ACCEPT</button></div>
+        </p>
+    </div>
+
+    <div id="turkID-container">
+        <p>
+        Please enter your Amazon MTurk Worker ID. </p>
+        <p>(It's a code in top left corner on your MTurk Worker page.)</p>
+        <p>
+            <input type="text" id="TurkID">
+        </p>
+
+        <div id="turkID-check" style="display: none;">
+            <p style="color:#b01c08;">
+                Provided Amazon MTurk ID is not valid. Please make sure to enter the correct ID!
+            </p>
+        </div>
+    </div>
+    <div id = "confirm">
+        <div class = "message">READY??</div>
+        <button class = "yes"> <span>GO!</span></button>
+    </div>
+    <div class="introduction-container" id="introduction-container">
+        <div class="content-center">
+            <span id="introduction-text"> </span>
+
+            <div><button id='backbutton' onclick="moveBack()">  Go Back  </button></div>
+            <br>
+            <div><button id='clickbutton' onclick="moveNext()">Continue</button></div>
+        </div>
+    </div>
+    <span id="catch-trial"> </span>
+
+    <div class="demo-container overlay" id="demo-container">
+        <div id="point-box"> </div>
+        <div id="progress-bar"> </div>
+        <div id="bonus-reminder"> </div>
+        <canvas id="testCanvas" style="z-index: 0">
+        </canvas>
+        </div>
+        <div id="overlayCanvas">
+        </div>
+    </div>
+
+    </div>
+</div>
+
+
+</body>
+</html>

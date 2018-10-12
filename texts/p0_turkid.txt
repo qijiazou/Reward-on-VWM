@@ -1,0 +1,3 @@
+<script type="text/javascript" src="all_functions.js"></script>
+
+<script>ID()</script>

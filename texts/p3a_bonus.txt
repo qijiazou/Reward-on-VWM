@@ -1,0 +1,7 @@
+
+<div>
+<p style="font-weight: bold; color:#fff968">Aside from your $5 payment, you can earn a bonus of up to <span id='max_bonus' style="font-size: 30pt"></span> if your errors are small! Every trial matters in determining your bonus!</p>
+</div>
+
+<p>Now you will do a demo in which we walk you through 3 trials. Your performance on these trials will NOT affect your bonus. </p>
+

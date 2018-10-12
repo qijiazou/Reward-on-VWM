@@ -1,0 +1,5 @@
+
+<p>Congratulations! You have successfully completed all the trials. </p>
+<p>Before revealing your bonus earned, we would like to ask you some questions regarding your experience during the experiment.</p>
+<p>There is no right or wrong, neither will the answers influence your bonus. Please select the option that best describes your feelings about the experiment.</p>
+

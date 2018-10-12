@@ -1,0 +1,18 @@
+
+<div id="q1" style = "text-align: left; padding-left: 10vw">
+<p style="font-size: 16pt; font-weight: bold; color: #fff968">*** Question 1: How much can you make in this study, <span style="text-decoration:underline">at most</span>? ***</p>
+<p style="font-size: 16pt"><input type="radio" name="q1" value="1A"> A. <span id='max_bonus'></span></p>
+<p style="font-size: 16pt"><input type="radio" name="q1" value="1B"> B. $5 </p>
+</div>
+
+<div id="q2" style = "text-align: left; padding-left: 10vw">
+<p style="font-size: 16pt; font-weight: bold; color: #fff968"> *** Question 2: How should you report the orientation of the striped pattern? *** </p>
+<p style="font-size: 16pt"><input type="radio" name="q2" value="2A"> A. Only by moving your mouse. </p>
+<p style="font-size: 16pt"><input type="radio" name="q2" value="2B"> B. By moving your mouse, then clicking once you have decided. </p>
+</div>
+
+<div id="q3" style = "text-align: left; padding-left: 10vw">
+<p style="font-size: 16pt; font-weight: bold; color: #fff968">*** Question 3: How is your performance evaluated on each trial? ***</p>
+<p style="font-size: 16pt"><input type="radio" name="q3" value="3A"> A. By how close your memory is to the actual orientation (i.e. how big your error is). </p>
+<p style="font-size: 16pt"><input type="radio" name="q3" value="3B"> B. By how fast you click. </p>
+</div>

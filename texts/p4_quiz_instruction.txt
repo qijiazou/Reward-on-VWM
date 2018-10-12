@@ -1,0 +1,6 @@
+
+<p>Congratulations! You've successfully completed the practice.</p>
+<p>Now you will take a short quiz to see if you have understood the instructions. Please answer them carefully. </p>
+<p style="font-weight: bold; color:#fff968">IF YOU FAIL TO ANSWER ALL OF THEM CORRECTLY, YOU WILL BE DISQUALIFIED FROM THE STUDY!</p>
+
+<p style="font-weight: bold; color:#fff968">Remember that aside from your $5 payment, you can earn a bonus of up to <span id='max_bonus' style="font-size: 30pt"></span>!</p>

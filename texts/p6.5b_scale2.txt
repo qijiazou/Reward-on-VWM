@@ -1,0 +1,69 @@
+
+<p style="font-weight: bold;text-align: left"> For each of the following statements, please indicate how true it is for you by selecting on the scale. </p>
+
+<table class="striped-columns border" style="font-size: 14pt;">
+    <thead style="color: #fff968">
+        <tr>
+            <th style="width:15vw"></th>
+            <th style="width:7vw"><div>1</div><div>(not at all)</div></th>
+            <th style="width:7vw">2</th>
+            <th style="width:7vw">3</th>
+            <th style="width:7vw"><div>4</div><div>(somewhat true)</div></th>
+            <th style="width:7vw">5</th>
+            <th style="width:7vw">6</th>
+            <th style="width:7vw"><div>7</div><div>(very true)</div></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>I thought this experiment was quite enjoyable.</td>
+            <td><input type="radio" value="1" name="likert_q6"/></td>
+            <td><input type="radio" value="2" name="likert_q6"/></td>
+            <td><input type="radio" value="3" name="likert_q6"/></td>
+            <td><input type="radio" value="4" name="likert_q6"/></td>
+            <td><input type="radio" value="5" name="likert_q6"/></td>
+            <td><input type="radio" value="6" name="likert_q6"/></td>
+            <td><input type="radio" value="7" name="likert_q6"/></td>
+        </tr>
+        <tr>
+            <td>While I was doing this experiment, I was thinking about how much I enjoyed it.</td>
+            <td><input type="radio" value="1" name="likert_q7"/></td>
+            <td><input type="radio" value="2" name="likert_q7"/></td>
+            <td><input type="radio" value="3" name="likert_q7"/></td>
+            <td><input type="radio" value="4" name="likert_q7"/></td>
+            <td><input type="radio" value="5" name="likert_q7"/></td>
+            <td><input type="radio" value="6" name="likert_q7"/></td>
+            <td><input type="radio" value="7" name="likert_q7"/></td>
+        </tr>
+        <tr>
+            <td>I think I am pretty good at this experiment.</td>
+            <td><input type="radio" value="1" name="likert_q8"/></td>
+            <td><input type="radio" value="2" name="likert_q8"/></td>
+            <td><input type="radio" value="3" name="likert_q8"/></td>
+            <td><input type="radio" value="4" name="likert_q8"/></td>
+            <td><input type="radio" value="5" name="likert_q8"/></td>
+            <td><input type="radio" value="6" name="likert_q8"/></td>
+            <td><input type="radio" value="7" name="likert_q8"/></td>
+        </tr>
+        <tr>
+            <td>I think I did pretty well at this experiment, compared to other people.</td>
+            <td><input type="radio" value="1" name="likert_q9"/></td>
+            <td><input type="radio" value="2" name="likert_q9"/></td>
+            <td><input type="radio" value="3" name="likert_q9"/></td>
+            <td><input type="radio" value="4" name="likert_q9"/></td>
+            <td><input type="radio" value="5" name="likert_q9"/></td>
+            <td><input type="radio" value="6" name="likert_q9"/></td>
+            <td><input type="radio" value="7" name="likert_q9"/></td>
+        </tr>
+        <tr>
+            <td>After working at this experiment for a while, I felt pretty competent.</td>
+            <td><input type="radio" value="1" name="likert_q10"/></td>
+            <td><input type="radio" value="2" name="likert_q10"/></td>
+            <td><input type="radio" value="3" name="likert_q10"/></td>
+            <td><input type="radio" value="4" name="likert_q10"/></td>
+            <td><input type="radio" value="5" name="likert_q10"/></td>
+            <td><input type="radio" value="6" name="likert_q10"/></td>
+            <td><input type="radio" value="7" name="likert_q10"/></td>
+        </tr>
+    </tbody>
+</table>

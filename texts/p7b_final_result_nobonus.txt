@@ -1,0 +1,8 @@
+
+<p>Congratulations! You have successfully completed the task. Thank you for your participation. </p>
+
+<p style="font-size: 20pt; font-weight: bold">Your Mechanical Turk code is <span id='turk_code' style='color:#fff968; text-decoration: underline'></span>.</p>
+<p style="font-size: 20pt">Please copy and paste this code to the original Amazon MTurk HIT page. </p>
+
+<br>
+<p>If you have any questions regarding this experiment, feel free to contact the experimenter at nicolezou0815@gmail.com. Thank you again for your participation!</p>

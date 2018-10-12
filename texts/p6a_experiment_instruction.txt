@@ -1,0 +1,12 @@
+
+<p>Good job! You have successfully passed the quiz!</p>
+<p>Now you can proceed to the actual experiment, which is the same as what you did so far, except that we will not provide feedback. </p>
+<p>There are 250 trials in total, and you will have a short break every 50 trials.</p>
+<p>Now and then, we will check your attention by asking you to press a certain key. Please make sure to respond correctly!
+<span style="font-weight: bold; text-decoration: underline">
+If you do not respond to ALL attention questions, your HIT will be rejected!
+</span></p>
+<p style="font-weight: bold; color: #fff968">
+Keep in mind that every trial matters in determining your bonus. </p>
+<p style="font-weight: bold; color: #fff968"> Your bonus is up to <span id='max_bonus' style = "font-size: 25pt"></span>!
+</p>
