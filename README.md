@@ -1,6 +1,6 @@
 # Reward-on-VWM
 
-This experiment is used for a human visual working memory research launched in 2018 on Amazon Mechanical Turk by Ma Lab @NYU Center for Neural Science.
+This experiment is used for a human visual working memory research launched in 2018 on Amazon Mechanical Turk by Ma Lab @NYU Center for Neural Science. This online experiment does NOT make use of PsiTurk.
 
 The code can also be used offline if you have a web server (e.g.: XAMPP) installed. To see the online version of the experiment, please go to the following link (it will ask you for your AMT ID-- just type in anything to proceed):
 > http://malab-nyu.com/N30981a/
