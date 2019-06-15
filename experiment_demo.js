@@ -11,59 +11,45 @@
 // *solved* 9. FIRST DEMO TRIAL: WHY CAN'T SEE GABOR?
 // *solved* 10. MOUSE-CHECK FUNCTION: NO MORE THAN 3 CONSECUTIVE NON-MOVEMENT RESPONSE
 // *solved* 11. TIMER: REACTION TIME!
-// 12. WE WILL NOT BLOCK PEOPLE FOR CONTINUOUS CLICKING NOW!
+// *solved* 12. WE WILL NOT BLOCK PEOPLE FOR CONTINUOUS CLICKING NOW!
+// *solved* 13. GENERATE A UNIQUE MTURK CODE AT THE END
 ////**********    IMPROVING NOTES    *********////
 
 
 //// **** NEXT STEPS **** ////
-// 1. DATA OUTPUT (JSON)
+// 1. DATA OUTPUT (into CSV: 250 trials * 18 columns)
 // 2. SERVER (CHECK WITH ZAHY & JENN?)
 // 3. PILOT RUNS!
 //// **** NEXT STEPS **** ////
 
 
 //// **** DATA TO RECORD **** ////
-// 1. MTURK ID
-// 2. BONUS CONDITION (N_randperm)
 
-// 3. START ANGLES (all_start_angle)
-// 4. RESPONSE ANGLES (response_array)
-// 5. ERRORS (all_error)
-// 6. TARGET POSITIONS (target_position_array)
-// 7. RESULTS FOR ATTENTION CHECKS
-// 8. WHETHER THE CONTINUOUS CLICKING CHECK FUNCTION HAS BEEN TRIGGERED (IF SO, HOW MANY TIMES)
-// 9. THE RANDOMIZED MTURK CODE
-// 10. ALL GABOR ANGLES ON A GIVEN TRIAL
-// 11. ALL POINTS
+// 1A. trial number;
+// 2B. SET SIZE;
+// 3C-10J. 8 columns for each gabor angle (if it's empty, then NaN: initialize it with NaN)
+// 11K. PROBED POSITION;
+// 12L. THE REAL ANGLE OF THE PROBED;
+// 13M. THE STARTING ANGLE OF THE PROBED;
+// 14N. RESPONSE ANGLE;
+// 15O. ERROR;
+// 16P. #POINTS;
+// 17Q. REACTION TIME (MS)
+// 18R. RESPONSE CHECK;
 
-//csv/mat
-//row is trial
-// column (16 in total)
-// 1. trial number;
-// 2. 8 columns for each gabor angle (if it's empty, then NaN: initialize it with NaN)
-// 3. PROBED POSITION;
-// 4. THE REAL ANGLE OF THE PROBED;
-// 5. THE STARTING ANGLE OF THE PROBED;
-// 6. RESPONSE ANGLE;
-// 7. ERROR;
-// 8. #POINTS;
-// 9. REACTION TIME (MS)
-// 10. HOW MANY TIMES THE CONTINUOUS CLICKING IS TRIGGERED (continuous_click)
 
-//10. ID
-//11. BONUS CONDITION
-//12. FINAL TRIAL PICKED
-//13. FINAL BONUS
-//14. CATCH TRIAL RESULTS
 
-//PROBABLY LOWER THE BASE RATE
+//ID (BOTH MTURK + SELF-GENERATED)
+//BONUS CONDITION
+//FINAL TRIAL PICKED
+//FINAL BONUS
+//CATCH TRIAL RESULTS
+
+//PROBABLY LOWER THE BASE RATE?? $2 --> $1.5?? Or should we tell them "You won't get any money if you fail all attention checks"?
 
 //GURECKIS TODT'S LAB: ZHIWEI FOR MTURK; MINGYU AND JENN FOR PAYING
 
 //READ ME FILE: MAKE IT CLEAR TO OTHERS HOW THE DATA IS GENERATED
-
-
-
 
 
 
@@ -76,7 +62,7 @@ var all_start_angle = [];
 var canvas;
 var ctx;
 var crossSize = 5;
-var gabor_size = 80;
+var gabor_size = 90;
 var imgGabor = new Image();
 
 var position_ind = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -93,12 +79,24 @@ var start_angle;
 var response_time;
 var response_time_array = [];
 var start_time;
-var continuous_click = 0;
 
 var mouse_check = 0;
 
 var mouse_X;
 var response_X;
+
+
+var point_sigma = 20;  //is it reasonable?
+var gaussian_expo;
+var pt_dist;
+var pt_round;
+
+
+//initialize data arrays;
+var data = [];
+var trial_array = [];
+
+
 
 
 function initializeScreen(){
@@ -126,9 +124,11 @@ function initializeScreen(){
     // x = radius * Math.sin(theta)
     // y = radius * Math.cos(theta)
     //use 0.707 as an approximation of (sqrt2)/2
-    radius = 0.35; //radius: the proportion (d:w) that the "virtual circle" takes up the screen
+    radius = 0.35; //radius: the proportion (d:h) that the "virtual circle" takes up the screen
     x_positions = [0, 0.707*radius*h, radius*h, 0.707*radius*h, 0, -0.707*radius*h, -radius*h, -0.707*radius*h];
     y_positions = [radius*h, 0.707*radius*h, 0, -0.707*radius*h, -radius*h, -0.707*radius*h, 0, 0.707*radius*h];
+
+    //gabor_size = 0.4 * radius * h;
 
 }
 
@@ -159,7 +159,7 @@ function randomize_N(n_trial){
 
 //for debugging purpose
     //return N_randperm;
-    console.log(N_randperm);
+    //console.log(N_randperm);
 }
 
 
@@ -169,6 +169,9 @@ function randomize_N(n_trial){
 
 function runDemo(n){
 
+    trial_array = ["NaN", "NaN", "NaN", "NaN","NaN", "NaN", "NaN", "NaN","NaN", "NaN", "NaN", "NaN","NaN", "NaN", "NaN", "NaN", "NaN", "NaN"];
+    trial_array[0] = now;
+
     initializeScreen();
 
     current_gabor_angles = gabor_orientation(now);
@@ -176,9 +179,6 @@ function runDemo(n){
     start_angle = (Math.random() * 180 - 90) * Math.PI / 180; // start_angle [-PI/2, PI/2]
 
     all_start_angle = all_start_angle.concat(start_angle);
-
-
-    //start_angle = ((canvas.width / 2 + rdm_start_angle * canvas.width/4 - canvas.width/8) % (canvas.width/4) / (canvas.width/4) * 180 - 90) * Math.PI / 180;
 
     ////*** STEP 1: SHOW PATCHES ***////
     setTimeout(function(){
@@ -195,8 +195,11 @@ function runDemo(n){
 
                 ////*** STEP 4: ASK FOR RESPONSE, SHOW THE POINTS ***////
                 start_time = new Date();
+
                 make_response();
 
+                //data[now-1] = trial_array;
+                //console.log("all data:" + data);
                 now++;
 
                 $("#demo-container").click(function(){
@@ -213,7 +216,7 @@ function runDemo(n){
                 })
 
             }, 1000); //delay
-        }, 70); //stimuli display time
+        }, 50); //stimuli display time
     }, 500); //actual inter-trial time = 500 + (1500-1000) = 1000 ms
 
 }
@@ -299,8 +302,28 @@ function display_patches(gabor_array, rand_position_ind){
 
     fixation();
 
-    console.log(gabor_array);
-    console.log(rand_position_ind);
+    //write the angles corresponding to each position into csv
+    for (l = 0; l < gabor_array.length; l++){
+        //trial_array: index 1~8
+        trial_array[rand_position_ind[l]+2] = gabor_array[l]
+    }
+
+    trial_array[1] = gabor_array.length;
+    //debugging purpose:
+    //console.log("2.SET SIZE:" + trial_array[1]);
+    //console.log("3.GABOR 0:" + trial_array[2]);
+    //console.log("4.GABOR 1:" + trial_array[3]);
+    //console.log("5.GABOR 2:" + trial_array[4]);
+    //console.log("6.GABOR 3:" + trial_array[5]);
+    //console.log("7.GABOR 4:" + trial_array[6]);
+    //console.log("8.GABOR 5:" + trial_array[7]);
+    //console.log("9.GABOR 6:" + trial_array[8]);
+    //console.log("10.GABOR 7:" + trial_array[9]);
+    //console.log(gabor_array);
+    //console.log(rand_position_ind);
+
+
+
     for (j = 0; j <= (gabor_array.length-1);j++){
         draw_gabor(rand_position_ind[j], gabor_array[j]);
     }
@@ -309,17 +332,48 @@ function display_patches(gabor_array, rand_position_ind){
 }
 
 
+function show_points(error){  //current_n = gabor_orientation[now].length
+
+    //convert error from rad back to degree
+
+    gaussian_expo = (-1) * (Math.abs(error)^2)/(2*point_sigma^2);
+    pt_dist = Math.exp(gaussian_expo);
+    pt_round = Math.round(10 * pt_dist);
+    all_points = all_points.concat(pt_round);
+
+    display_result(pt_round);
+
+    //calculate points: Matlab code from Paul & Luigi
+    //sigma       = design.pointsigma_mult(idx_val)*design.width(idx_val);
+    //vals        = [responseAngle-180-params.trial_mean responseAngle-params.trial_mean responseAngle+180-params.trial_mean];
+    //error       = min(abs(vals));    //abs might not be needed here since in expo it is squared.
+    //expo        = ((error)^2)/(2*sigma^2);
+    //points_prob = exp(-expo);
+    //point_totes = round(10*points_prob);
+
+}
+
+
+
 function display_result(pt_round){
-    document.getElementById("point-box").innerHTML = pt_round + " points";
+
+    if (DEMO === "True"){
+        document.getElementById("point-box").innerHTML = pt_round + " points (red line is correct answer!)";
+    } else {
+        document.getElementById("point-box").innerHTML = pt_round + " points";
+    }
+
     document.getElementById("point-box").style.display = 'inline';
 
 }
 
 
 
+
 $(document).mousemove(function(e) {
     mouse_X = e.pageX;
 });
+
 
 
 
@@ -337,7 +391,7 @@ function make_response(){
         initializeScreen();
         draw_gabor(target_position, angleDifference);
 
-    }, 15);  //the gabor image will be refreshed w.r.t. the mouse every 15ms.
+    }, 25);  //the gabor image will be refreshed w.r.t. the mouse every 25ms.
 
 
     //things happened after clicking
@@ -358,13 +412,29 @@ function make_response(){
 
         response_time_array = response_time_array.concat(response_time);
 
-        console.log("response time:" + response_time);
-        console.log("time before response:" + start_time);
-        console.log("time after click: " + click_time);
+        //console.log("response time:" + response_time);
+        //console.log("time before response:" + start_time);
+        //console.log("time after click: " + click_time);
 
         clearInterval((refreshIntervalId));
 
         response_angle = (response_X/5 - mouseXStartPosition/5 + start_angle) % Math.PI; //response_angle: [-PI, PI]
+
+        //convert the response angle from [-PI, PI] to [-PI/2, PI/2]
+        function convert_resp(response){
+            var resp1 = response;
+            var resp2 = response + Math.PI;
+            var resp3 = response - Math.PI;
+
+            if (Math.abs(resp1) <= Math.PI/2){
+                response_angle = resp1;
+            } else if (Math.abs(resp2) <= Math.PI/2){
+                response_angle = resp2;
+            } else if (Math.abs(resp3) <= Math.PI/2){
+                response_angle = resp3;
+            }
+        }
+        convert_resp(response_angle);
 
         //calculation
         response_array = response_array.concat(response_angle * 180 / Math.PI);
@@ -372,8 +442,8 @@ function make_response(){
 
         function calculate_error(response, real){
 
-            //response [-PI, PI]
             //real [-PI/2, PI/2]
+            //response [-PI/2, PI/2]
             //final output error [-PI/2, PI/2]
 
             var err_1 = response - Math.PI - real;
@@ -401,10 +471,11 @@ function make_response(){
         target_angle_array = target_angle_array.concat(current_gabor_angles[0] * 180 / Math.PI);
 
         //for debugging purpose
-        console.log('response angle:' + response_angle);
-        console.log('real angle: ' + current_gabor_angles[0]);
-        console.log('error:' + error);
-        console.log("start angle:" + start_angle);
+        //console.log('response angle:' + response_angle);
+        //console.log('real angle: ' + current_gabor_angles[0]);
+        //console.log('error:' + error);
+        //console.log("start angle:" + start_angle);
+
 
         var mouse_move_angle = Math.abs(response_angle - start_angle);
         response_check(mouse_move_angle);
@@ -421,41 +492,39 @@ function make_response(){
         setTimeout(function(){
             initializeScreen();
             document.getElementById("point-box").style.display = 'none';
-        },1000); //result display time after clicking
 
 
-    })
+            //trial_array[1~8]: starting from ~line 306
+            //trial_array[0]: ~line 186
+            trial_array[10] = target_position;
+            trial_array[11] = current_gabor_angles[0];
+            trial_array[12] = start_angle;
+            trial_array[13] = response_angle;
+            trial_array[14] = error;
+            trial_array[15] = pt_round;
+            trial_array[16] = response_time;
+            trial_array[17] = mouse_check;
+
+            data[now-2] = trial_array;
+            //console.log(data);
+
+        },1500); //result display time after clicking
+
+
+        //write data into the trial array
+        // [0] 1. trial number;
+        // [1-8] 2. 8 columns for each gabor angle (if it's empty, then NaN: initialize it with NaN)
+        // 3. PROBED POSITION;
+        // 4. THE REAL ANGLE OF THE PROBED;
+        // 5. THE STARTING ANGLE OF THE PROBED;
+        // 6. RESPONSE ANGLE;
+        // 7. ERROR;
+        // 8. #POINTS;
+        // 9. REACTION TIME (MS)
+
+    });
+
 }
-
-var point_sigma = 17 * 0.8;
-var gaussian_expo;
-var pt_dist;
-var pt_round;
-
-function show_points(error){  //current_n = gabor_orientation[now].length
-
-    //convert error from rad back to degree
-
-    gaussian_expo = (-1) * (Math.abs(error)^2)/(2*point_sigma^2);
-    pt_dist = Math.exp(gaussian_expo);
-    pt_round = Math.round(10 * pt_dist);
-
-    all_points = all_points.concat(pt_round);
-
-    display_result(pt_round);
-
-    console.log('pt_distribution' + pt_dist);
-
-    //calculate points: Matlab code from Paul & Luigi
-    //sigma       = design.pointsigma_mult(idx_val)*design.width(idx_val);
-    //vals        = [responseAngle-180-params.trial_mean responseAngle-params.trial_mean responseAngle+180-params.trial_mean];
-    //error       = min(abs(vals));    //abs might not be needed here since in expo it is squared.
-    //expo        = ((error)^2)/(2*sigma^2);
-    //points_prob = exp(-expo);
-    //point_totes = round(10*points_prob);
-
-}
-
 
 
 function draw_real_angle(target_position,real_angle,response_angle){
@@ -497,18 +566,11 @@ function draw_real_angle(target_position,real_angle,response_angle){
 //test if the subject makes response without moving the mouse for 3 times consecutively:
 function response_check(mouse_move_angle){
 
-    if (Math.abs(mouse_move_angle) < 0.00001){ //this is the current trial
-        mouse_check++;
+    if (Math.abs(mouse_move_angle) < 0.00000001){ //this is the current trial
+        mouse_check = 1;  // 1 means the mouse didn't move
     } else {
         mouse_check = 0;
     }
-    if (mouse_check === 5){
-        //alert("Please move your mouse to make a response!");
-        continuous_click++;
-        mouse_check = 0;
-        //DATA OUTPUT: IF THIS FUNCTION IS TRIGGERED, WE NEED TO MARK THE DATA
-    }
-    console.log('non-movement count' + mouse_check);
 }
 
 
@@ -520,5 +582,6 @@ function initializeQuiz() {
     document.getElementById("introduction-container").style.display = "block";
 
 }
+
 
 

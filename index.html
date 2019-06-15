@@ -1,18 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:font-family="http://www.w3.org/1999/xhtml">
 
 <style>
 
 
     .page-content {
-        margin:100px auto;
-        padding:50px;
+        margin: 50px auto;
+        margin-left: 7vw;
+        padding:30px;
         text-align:center;
         font-size: 16pt;
         background: rgb(128, 128, 128);
         color: white;
         width: 80vw;
         height: 80vh;
+        position: fixed;
     }
 
     #clickbutton{
@@ -101,11 +103,17 @@
 <div class="page-content">
     <div id="turkID-container">
         <p>
-        Please enter your Amazon MTurk ID.
-        </p>
+        Please enter your Amazon MTurk Worker ID. </p>
+        <p>(It's a 14-digit code in top left corner on your MTurk Worker page.)</p>
         <p>
-            <input id="TurkID">
+            <input type="text" id="TurkID">
         </p>
+
+        <div id="turkID-check" style="display: none;">
+            <p style="color:#b01c08;">
+                Provided Amazon MTurk ID is not in valid. Please make sure to enter the correct ID!
+            </p>
+        </div>
     </div>
     <div class="introduction-container" id="introduction-container">
         <div class="content-center">
@@ -128,6 +136,7 @@
 
     </div>
 </div>
+
 
 </body>
 </html>
